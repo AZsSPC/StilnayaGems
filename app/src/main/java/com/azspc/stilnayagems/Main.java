@@ -11,7 +11,10 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.azspc.stilnayagems.draw.Placeholder;
+
 import static com.azspc.stilnayagems.Storage.st_over;
+import static com.azspc.stilnayagems.Storage.st_play;
 
 public class Main extends AppCompatActivity {
     public static Storage store;
@@ -40,7 +43,11 @@ public class Main extends AppCompatActivity {
                 return true;
             }
             case MotionEvent.ACTION_UP: {
-                if (store.getDraw().getShowScreenType() == st_over) recreate();
+                if (store.getDraw().getShowScreenType() == st_over) {
+                    store.preInitDraw(this);
+                    store.getDraw().setShowScreenType(st_play);
+                    store.getDraw().addPlaceholder(new Placeholder("Enjoy again", store.getScreenSize(0) / 3, store.getScreenSize(1) / 2, store.getScreenSize(0) / 3, 0, 50));
+                }
                 store.getPlay().setChecked(false);
                 if (store.is_game_over()) store.writeFile();
                 if (store.getPlay_up_sound() == 1 && store.is_sound_on()) {

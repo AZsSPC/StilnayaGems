@@ -224,13 +224,11 @@ public class Play extends DrawAsset {
         c.drawText("Height score: " + score_height, sb, sb + ts * 2, p);
         c.drawText("Checked: " + checked, sb, sb + ts * 3, p);
         c.drawText("Gem spawn count: " + gem_spawn_count, sb, sb + ts * 4, p);
-        p.setColor(Color.GRAY);
-        p.setTextSize(ts / 3 * 2);
-        c.drawText(" Application is under development.", sb, sb + ts * 6 , p);
-        p.setTextSize(ts );
         p.setTextAlign(Paint.Align.CENTER);
-        p.setColor(Color.BLACK);
         c.drawText("You need: " + needs, store.getScreenSize(0) / 2, space_for_desk - ts, p);
+        p.setColor(Color.GRAY);
+        p.setTextSize((float) (ts * 0.75));
+        c.drawText(" Application is under development.", store.getScreenSize(0) / 2, store.getScreenSize(1) + ts, p);
     }
 
     private boolean checkOverPlaced() {
