@@ -51,7 +51,7 @@ public class Main extends AppCompatActivity {
                 store.getPlay().setChecked(false);
                 if (store.is_game_over()) store.writeFile();
                 if (store.getPlay_up_sound() == 1 && store.is_sound_on()) {
-                    store.getSound_manager().play(store.getSound_manager().getS_gem_down(), 0.4f, 0.4f, 0, 0, 2.8f);
+                    store.getSound_manager().play(store.getSound_manager().getS_gem_down(), 0.5f, 0.5f, 0, 0, 2.8f);
                     store.setPlay_up_sound(0);
                 }
                 store.setDownPos(new int[]{0, 0});
@@ -74,6 +74,10 @@ public class Main extends AppCompatActivity {
         super.onResume();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        try {
+            store.getSound_manager().play(store.getSound_manager().getS_lvl_start(), 0.5f, 0.5f, 0, 0, 1);
+        } catch (Exception ignored) {
+        }
         if (Build.VERSION.SDK_INT < 19)
             getWindow().getDecorView().setSystemUiVisibility(View.GONE);
         else
