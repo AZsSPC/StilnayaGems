@@ -6,11 +6,11 @@ public class Levels {
     public static final String all = "" +
             "lv0=r:2,b:7;" +
             "lv1=r:5,g:3,b:7;" +
-            "lv2=p:1;" +
-            "lv3=b:15,a:10;" +
-            "lv4=y:9,o:9,r:9;" +
-            "lv5=b:2,a:4;" +
-            "lv6=v:16,b:4,a:7;";
+            "lv2=b:15,a:10;" +
+            "lv3=y:9,o:9,r:9;" +
+            "lv4=b:2,a:4;" +
+            "lv5=v:16,b:4,a:7;" +
+            "lv6=p:1;";//second this level IMPOSSIBLE!
 
     public static String getCFG(int id) {
         switch (id) {

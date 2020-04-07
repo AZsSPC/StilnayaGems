@@ -63,7 +63,7 @@ public class Storage {
     }
 
     public void preInitDraw(Context c) {
-        play = new Play(1, 5, c.getResources(), c.getResources().getColor(R.color.play_bg));
+        play = new Play((int) (Math.random() * 6), 5, c.getResources(), c.getResources().getColor(R.color.play_bg));
         over = new Over(c.getResources().getColor(R.color.win_bg), c.getResources().getColor(R.color.lose_bg));
     }
 
