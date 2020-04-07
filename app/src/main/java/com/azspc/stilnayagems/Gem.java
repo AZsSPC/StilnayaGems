@@ -1,9 +1,6 @@
 package com.azspc.stilnayagems;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.util.Log;
 
 import com.azspc.stilnayagems.draw.Play;
 
@@ -35,11 +32,11 @@ public class Gem {
 
     public void draw(Canvas c) {
         Play p = store.getPlay();
-        if (isGemTouch(store.getdPos()[0], store.getdPos()[1], p) && !(image_id == gem_null || image_id == gem_ghost) && store.is_touch()) {
-            if (store.getPlay_up_sound() == 0.5) store.setPlay_up_sound(1);
+        if (isGemTouch(store.getPosD()[0], store.getPosD()[1], p) && !(image_id == gem_null || image_id == gem_ghost) && store.isTouch()) {
+            if (store.getPlayUpSound() == 0.5) store.setPlayUpSound(1);
             selected = true;
             initGhosts(false);
-            c.drawBitmap(store.getImage(image_id), store.getmPos()[0] - p.getPullSize() / 2, store.getmPos()[1] - p.getPullSize() / 2 - p.getPullSize() / 5, null);
+            c.drawBitmap(store.getImage(image_id), (int) (store.getPosM()[0] - p.getPullSize() / 2), (int) (store.getPosM()[1] - p.getPullSize() / 2 - p.getPullSize() / 5), null);
         } else {
             if (selected) {
                 putGem(p);
@@ -47,16 +44,16 @@ public class Gem {
                 p.checkTasks();
             }
             c.drawBitmap(store.getImage(image_id),
-                    store.getScreen_bounds() + p.getPullSize() * pos[0],
+                    store.getScreenBounds() + p.getPullSize() * pos[0],
                     p.getSpaceForDesk() + p.getPullSize() * pos[1], null);
         }
     }
 
     private void putGem(Play p) {
-        if (!store.is_touch()) {
+        if (!store.isTouch()) {
             int[] putPos = new int[]{
-                    (store.getuPos()[0] - store.getScreenBounds()) / p.getPullSize(),
-                    (store.getuPos()[1] - p.getSpaceForDesk()) / p.getPullSize()};
+                    (store.getPosU()[0] - store.getScreenBounds()) / p.getPullSize(),
+                    (store.getPosU()[1] - p.getSpaceForDesk()) / p.getPullSize()};
             try {
                 if (p.getGemsGhosts()[putPos[0]][putPos[1]]) {
                     p.setGem(putPos[0], putPos[1], image_id, move_role);

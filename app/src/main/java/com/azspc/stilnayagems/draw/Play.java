@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.azspc.stilnayagems.Gem;
 import com.azspc.stilnayagems.R;
@@ -198,15 +197,15 @@ public class Play extends DrawAsset {
 
     private void drawGhosts(Canvas c) {
         Bitmap ghost = store.getImage(gem_ghost);
-        if (store.is_touch()) for (int x = 0; x < gems.length; x++)
+        if (store.isTouch()) for (int x = 0; x < gems.length; x++)
             for (int y = 0; y < gems.length; y++)
                 if (ghosts[x][y])
-                    c.drawBitmap(ghost, store.getScreen_bounds() + pull_size * x, space_for_desk + pull_size * y, null);
+                    c.drawBitmap(ghost, store.getScreenBounds() + pull_size * x, space_for_desk + pull_size * y, null);
 
     }
 
     private void drawPulls(Canvas c) {
-        c.drawBitmap(pulls, store.getScreen_bounds(), space_for_desk, null);
+        c.drawBitmap(pulls, store.getScreenBounds(), space_for_desk, null);
     }
 
     private void drawGemstone(Canvas c) {
@@ -215,18 +214,18 @@ public class Play extends DrawAsset {
 
     private void drawHints(Canvas c) {
         Paint p = new Paint();
-        int ts = store.getText_size();
-        int sb = store.getScreen_bounds();
+        int ts = store.getTextSize();
+        int sb = store.getScreenBounds();
         p.setTextSize(ts);
         c.drawText("Score: " + score, sb, sb + ts, p);
         c.drawText("Height score: " + score_height, sb, sb + ts * 2, p);
         c.drawText("Checked: " + checked, sb, sb + ts * 3, p);
         c.drawText("Gem spawn count: " + gem_spawn_count, sb, sb + ts * 4, p);
         p.setTextAlign(Paint.Align.CENTER);
-        c.drawText("You need: " + needs, store.getScreenSize(0) / 2, space_for_desk - ts, p);
+        c.drawText("You need: " + needs, (int) (store.getScreenSize(0) / 2), space_for_desk - ts, p);
         p.setColor(Color.GRAY);
         p.setTextSize((float) (ts * 0.75));
-        c.drawText(" Application is under development.", store.getScreenSize(0) / 2, store.getScreenSize(1) + ts, p);
+        c.drawText(" Application is under development.", (int) (store.getScreenSize(0) / 2), store.getScreenSize(1) + ts, p);
     }
 
     private boolean checkOverPlaced() {
@@ -268,7 +267,7 @@ public class Play extends DrawAsset {
                         }
                     }
             if (to_del.size() > 0) {
-                SoundManager sm = store.getSound_manager();
+                SoundManager sm = store.getSoundManager();
                 for (int[] i : to_del) {
                     store.getDraw().addPlaceholder(new Placeholder(store.getImage(gems[i[0]][i[1]].getImageID()),
                             store.getScreenBounds() + pull_size * i[0], space_for_desk + pull_size * i[1], 0, 0, 32));
@@ -284,7 +283,7 @@ public class Play extends DrawAsset {
                         store.getScreenSize(0) - store.getScreenBounds() - (store.getScreenSize(0) - store.getScreenBounds() * 2) / 5 * text.length(),
                         store.getScreenSize(1) / 2 - pull_size, 0, 0, 32));
                 score += to_del.size();
-                if (sm.isEnable()) sm.play(sm.getS_score_up(), 1, 1, 0, 0, 1.2f);
+                if (sm.isEnable()) sm.play(sm.getSoundScoreUp(), 1, 1, 0, 0, 1.2f);
 // if (score > score_height) {
 //                    if (sm.isEnable()) sm.play(sm.getS_score_up(), 1, 1, 0, 1, 2f);
 //                    store.getDraw().addPlaceholder(new Placeholder("New height score!", screen_size[0] / 2, screen_size[1] / 2, screen_size[0] / 4, screen_size[1] / 4, 32, this));

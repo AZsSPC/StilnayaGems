@@ -3,15 +3,13 @@ package com.azspc.stilnayagems.draw;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import org.w3c.dom.Text;
-
 import static com.azspc.stilnayagems.Main.store;
 
 public class Over extends DrawAsset {
-    int[] colors;
-    String out;
-    String[] win = {"You great!", "Success!", "Nice score!", "Good job", "You win!"};
-    String[] lose = {"Try again...", "Lose", "Bad score", "You can replay it!"};
+    private int[] colors;
+    private String out;
+    private String[] win = {"You great!", "Success!", "Nice score!", "Good job", "You win!"};
+    private String[] lose = {"Try again...", "Lose", "Bad score", "You can replay it!"};
 
     public void setFinType(boolean torf) {
         if (torf) {
@@ -33,12 +31,12 @@ public class Over extends DrawAsset {
     public void draw(Canvas c) {
         super.draw(c);
         Paint p = new Paint();
-        int ts = store.getText_size() * 2;
+        int ts = store.getTextSize() * 2;
         p.setTextSize(ts);
         p.setTextAlign(Paint.Align.CENTER);
-        c.drawText("Game over", store.getScreenSize(0) / 2, (store.getScreenSize(1) - ts) / 2, p);
-        c.drawText("Score: " + store.getPlay().getScore(), store.getScreenSize(0) / 2, (store.getScreenSize(1) + ts) / 2, p);
-        p.setTextSize(ts / 2);
-        c.drawText(out, store.getScreenSize(0) / 2, (store.getScreenSize(1) + ts * 4) / 2, p);
+        c.drawText("Game over", (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) - ts) / 2), p);
+        c.drawText("Score: " + store.getPlay().getScore(), (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) + ts) / 2), p);
+        p.setTextSize(ts >> 2);
+        c.drawText(out, (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) + ts * 4) / 2), p);
     }
 }

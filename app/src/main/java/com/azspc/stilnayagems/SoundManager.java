@@ -6,19 +6,19 @@ import android.media.SoundPool;
 import android.util.Log;
 
 public class SoundManager extends SoundPool implements SoundPool.OnLoadCompleteListener {
-    public int getS_score_up() {
+    public int getSoundScoreUp() {
         return s_score_up;
     }
 
-    public int getS_lvl_start() {
+    public int getSoundLvlStart() {
         return s_lvl_start;
     }
 
-    public int getS_gem_up() {
+    public int getSoundGemUp() {
         return s_gem_up;
     }
 
-    public int getS_gem_down() {
+    public int getSoundGemDown() {
         return s_gem_down;
     }
 

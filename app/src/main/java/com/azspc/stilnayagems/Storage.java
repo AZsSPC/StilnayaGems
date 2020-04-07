@@ -71,7 +71,7 @@ public class Storage {
         images.put(id, img);
     }
 
-    public SoundManager getSound_manager() {
+    public SoundManager getSoundManager() {
         return sound_manager;
     }
 
@@ -83,7 +83,7 @@ public class Storage {
         this.over = over;
     }
 
-    public void setPlay_up_sound(double play_up_sound) {
+    public void setPlayUpSound(double play_up_sound) {
         this.play_up_sound = play_up_sound;
     }
 
@@ -103,51 +103,44 @@ public class Storage {
         this.touch = is_touch;
     }
 
-    public void setIs_game_over(boolean is_game_over) {
+    public void setIsGameOver(boolean is_game_over) {
         this.game_over = is_game_over;
     }
 
-    public void setIs_sound_on(boolean is_sound_on) {
+    public void setIsSoundOn(boolean is_sound_on) {
         this.sound_on = is_sound_on;
     }
 
-    public int getScreen_bounds() {
-        return screen_bounds;
-    }
-
-    public int getText_size() {
+    public int getTextSize() {
         return text_size;
     }
 
-    public double getPlay_up_sound() {
+    public double getPlayUpSound() {
         return play_up_sound;
     }
 
-    public int[] getScreen_size() {
-        return screen_size;
-    }
 
-    public int[] getmPos() {
+    public int[] getPosM() {
         return mPos;
     }
 
-    public int[] getdPos() {
+    public int[] getPosD() {
         return dPos;
     }
 
-    public int[] getuPos() {
+    public int[] getPosU() {
         return uPos;
     }
 
-    public boolean is_touch() {
+    public boolean isTouch() {
         return touch;
     }
 
-    public boolean is_game_over() {
+    public boolean isGameOver() {
         return game_over;
     }
 
-    public boolean is_sound_on() {
+    public boolean isSoundOn() {
         return sound_on;
     }
 

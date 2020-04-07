@@ -59,15 +59,15 @@ public class Draw extends View {
 
     void drawPlaceholders(Canvas c) {
         Paint p = new Paint();
-        p.setTextSize((store.getScreenSize(0) - store.getScreenBounds() * 2) / 5);
+        p.setTextSize((int) ((store.getScreenSize(0) - store.getScreenBounds() * 2) / 5));
         for (int i = 0; i < placeholders.size(); i++) {
             Placeholder pl = placeholders.get(i);
             int plus = pl.getTime() - pl.getI() * 2;
             p.setColor(Color.argb(255, 200 + plus, 150 + plus, 50 + plus));
             if (pl.getI() <= 0) placeholders.remove(i);
-            if (pl.getType() == ph_from_to)
+            if (pl.getType().equals(ph_from_to))
                 c.drawText(pl.getText(), pl.getPosX(), pl.getPosY(), p);
-            else if (pl.getType() == ph_from_to_img)
+            else if (pl.getType().equals(ph_from_to_img))
                 c.drawBitmap(pl.getImg(), pl.getPosX(), pl.getPosY(), p);
         }
     }
