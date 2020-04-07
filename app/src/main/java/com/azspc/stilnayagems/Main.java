@@ -75,7 +75,7 @@ public class Main extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         try {
-            store.getSound_manager().play(store.getSound_manager().getS_lvl_start(), 0.5f, 0.5f, 0, 0, 1);
+            store.getSound_manager().play(store.getSound_manager().getS_lvl_start(), 0.3f, 0.3f, 0, 0, 1);
         } catch (Exception ignored) {
         }
         if (Build.VERSION.SDK_INT < 19)

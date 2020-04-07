@@ -106,9 +106,9 @@ public class Play extends DrawAsset {
         store.putImage(gem_blue, getOB(r, R.drawable.gem_blue));
         store.putImage(gem_green, getOB(r, R.drawable.gem_green));
         store.putImage(gem_orange, getOB(r, R.drawable.gem_orange));
-        //  store.putImage(gem_pink, getOB(r, R.drawable.gem_pink));
+        store.putImage(gem_pink, getOB(r, R.drawable.gem_pink));
         store.putImage(gem_red, getOB(r, R.drawable.gem_red));
-        store.putImage(gem_violet, getOB(r, R.drawable.gem_magenta));
+        store.putImage(gem_violet, getOB(r, R.drawable.gem_violet));
         store.putImage(gem_yellow, getOB(r, R.drawable.gem_yellow));
     }
 
@@ -160,14 +160,14 @@ public class Play extends DrawAsset {
                 return gem_orange;
             case 6:
                 return gem_yellow;
-            //case 7:
-            //  return gem_pink;
+            case 7:
+                return gem_pink;
         }
     }
 
     // </editor-fold>
     HashMap<String, Integer> gemDestroyed = new HashMap<>();
-    String needs = "";
+    String needs, level_settings;
     private int pull_size, space_for_desk, score, score_height, gem_spawn_count, level_id;
     private boolean[][] ghosts;
     private boolean checked;
@@ -183,11 +183,9 @@ public class Play extends DrawAsset {
         space_for_desk = store.getScreenSize(1) - (store.getScreenBounds() + pull_size * gems.length);
         initGemBitmaps(r);
         initPull();
-        for (String s : all.split("lv" + level_id + "=")[1].substring(0, all.split("lv" + level_id + "=")[1].indexOf(";")).split(",")) {
-            gemDestroyed.put(s.split(":")[0], 0);
-            needs += ", " + s;
-        }
-        needs = needs.substring(2);
+        level_settings = all.split("lv" + level_id + "=")[1].substring(0, all.split("lv" + level_id + "=")[1].indexOf(";"));
+        needs = level_settings;
+        for (String s : level_settings.split(",")) gemDestroyed.put(s.split(":")[0], 0);
     }
 
     public void draw(Canvas c) {
@@ -240,10 +238,10 @@ public class Play extends DrawAsset {
 
     public void checkTasks() {
         boolean tasksCompleted = true;
-        for (String task : all.split("lv" + level_id + "=")[1].substring(0, all.split("lv" + level_id + "=")[1].indexOf(";")).split(",")) {
-            //Log.e("lvl-" + level_id + " task", task + " | " + gemDestroyed.get(task.split(":")[0]));
+        for (String task : level_settings.split(","))
             tasksCompleted &= Integer.parseInt(task.split(":")[1]) <= gemDestroyed.get(task.split(":")[0]);
-        }
+        //Log.e("lvl-" + level_id + " task", task + " | " + gemDestroyed.get(task.split(":")[0]));
+
 
         if (tasksCompleted) {
             store.getDraw().setShowScreenType(2);
