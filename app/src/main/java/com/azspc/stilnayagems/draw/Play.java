@@ -102,12 +102,13 @@ public class Play extends DrawAsset {
         store.putImage(gem_pull, getOB(r, R.drawable.gem_pull));
         store.putImage(gem_null, getOB(r, R.drawable.gem_null));
         store.putImage(gem_ghost, getOB(r, R.drawable.gem_ghost));
+        store.putImage(gem_aqua, getOB(r, R.drawable.gem_aqua));
         store.putImage(gem_blue, getOB(r, R.drawable.gem_blue));
         store.putImage(gem_green, getOB(r, R.drawable.gem_green));
-        store.putImage(gem_violet, getOB(r, R.drawable.gem_magenta));
-        store.putImage(gem_red, getOB(r, R.drawable.gem_red));
-        store.putImage(gem_aqua, getOB(r, R.drawable.gem_aqua));
         store.putImage(gem_orange, getOB(r, R.drawable.gem_orange));
+        //  store.putImage(gem_pink, getOB(r, R.drawable.gem_pink));
+        store.putImage(gem_red, getOB(r, R.drawable.gem_red));
+        store.putImage(gem_violet, getOB(r, R.drawable.gem_magenta));
         store.putImage(gem_yellow, getOB(r, R.drawable.gem_yellow));
     }
 
@@ -142,7 +143,7 @@ public class Play extends DrawAsset {
     }
 
     private int getRandomGem() {
-        switch ((int) (Math.random() * gems.length * gems.length)) {
+        switch ((int) (Math.random() * 8 * gems.length)) {
             default:
                 return gem_null;
             case 0:
@@ -159,11 +160,14 @@ public class Play extends DrawAsset {
                 return gem_orange;
             case 6:
                 return gem_yellow;
+            //case 7:
+            //  return gem_pink;
         }
     }
 
     // </editor-fold>
     HashMap<String, Integer> gemDestroyed = new HashMap<>();
+    String needs = "";
     private int pull_size, space_for_desk, score, score_height, gem_spawn_count, level_id;
     private boolean[][] ghosts;
     private boolean checked;
@@ -179,9 +183,11 @@ public class Play extends DrawAsset {
         space_for_desk = store.getScreenSize(1) - (store.getScreenBounds() + pull_size * gems.length);
         initGemBitmaps(r);
         initPull();
-        for (String s : all.split("lv" + level_id + "=")[1].substring(0, all.split("lv" + level_id + "=")[1].indexOf(";")).split(","))
+        for (String s : all.split("lv" + level_id + "=")[1].substring(0, all.split("lv" + level_id + "=")[1].indexOf(";")).split(",")) {
             gemDestroyed.put(s.split(":")[0], 0);
-
+            needs += ", " + s;
+        }
+        needs = needs.substring(2);
     }
 
     public void draw(Canvas c) {
@@ -219,11 +225,12 @@ public class Play extends DrawAsset {
         c.drawText("Checked: " + checked, sb, sb + ts * 3, p);
         c.drawText("Gem spawn count: " + gem_spawn_count, sb, sb + ts * 4, p);
         p.setColor(Color.GRAY);
-        p.setTextSize((ts /= 3) * 2);
-        p.setTextSize(ts * 2);
-        c.drawText(" Application is under development.", sb, sb + ts * 6 * 3, p);
-        c.drawText(" \"Do not judge strictly\" - AZsSPC", sb, sb + ts * 7 * 3, p);
-        p.setColor(Color.argb(50, 0, 0, 0));
+        p.setTextSize(ts / 3 * 2);
+        c.drawText(" Application is under development.", sb, sb + ts * 6 , p);
+        p.setTextSize(ts );
+        p.setTextAlign(Paint.Align.CENTER);
+        p.setColor(Color.BLACK);
+        c.drawText("You need: " + needs, store.getScreenSize(0) / 2, space_for_desk - ts, p);
     }
 
     private boolean checkOverPlaced() {
