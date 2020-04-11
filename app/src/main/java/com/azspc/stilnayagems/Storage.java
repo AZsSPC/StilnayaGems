@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.azspc.stilnayagems.draw.Draw;
@@ -52,7 +54,7 @@ public class Storage {
         sound_on = pm.getBoolean("sound_on", true);
         play_up_sound = 0;
         screen_size = new int[]{w, h};
-        text_size = screen_size[0] / 16;
+        text_size = screen_size[0] / 12;
         screen_bounds = screen_size[0] / 32;
         sound_manager = new SoundManager(c);
     }
@@ -63,8 +65,11 @@ public class Storage {
     }
 
     public void preInitDraw(Context c) {
-        play = new Play((int) (Math.random() * 6), 5, c.getResources(), c.getResources().getColor(R.color.play_bg));
-        over = new Over(c.getResources().getColor(R.color.win_bg), c.getResources().getColor(R.color.lose_bg));
+        Paint p = new Paint();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            p.setTypeface(c.getResources().getFont(R.font.dom));
+        play = new Play((int) (Math.random() * 6), 5, c.getResources(), c.getResources().getColor(R.color.play_bg), p);
+        over = new Over(c.getResources().getColor(R.color.win_bg), c.getResources().getColor(R.color.lose_bg), p);
     }
 
     public void putImage(int id, Bitmap img) {

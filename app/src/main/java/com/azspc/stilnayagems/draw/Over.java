@@ -10,6 +10,7 @@ public class Over extends DrawAsset {
     private String out;
     private String[] win = {"You great!", "Success!", "Nice score!", "Good job", "You win!"};
     private String[] lose = {"Try again...", "Lose", "Bad score", "You can replay it!"};
+    private Paint paint;
 
     public void setFinType(boolean torf) {
         if (torf) {
@@ -21,22 +22,22 @@ public class Over extends DrawAsset {
         }
     }
 
-    public Over(int w_c, int l_c) {
+    public Over(int w_c, int l_c, Paint p) {
         super(0);
-        out = "You great!";
+        paint = p;
+        out = "that's an a error, lol";
         colors = new int[]{w_c, l_c};
     }
 
     @Override
     public void draw(Canvas c) {
         super.draw(c);
-        Paint p = new Paint();
         int ts = store.getTextSize() * 2;
-        p.setTextSize(ts);
-        p.setTextAlign(Paint.Align.CENTER);
-        c.drawText("Game over", (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) - ts) / 2), p);
-        c.drawText("Score: " + store.getPlay().getScore(), (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) + ts) / 2), p);
-        p.setTextSize(ts >> 2);
-        c.drawText(out, (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) + ts * 4) / 2), p);
+        paint.setTextSize(ts);
+        paint.setTextAlign(Paint.Align.CENTER);
+        c.drawText("Game over", (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) - ts) / 2), paint);
+        c.drawText("Score: " + store.getPlay().getScore(), (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) + ts) / 2), paint);
+        paint.setTextSize(ts >> 1);
+        c.drawText(out, (int) (store.getScreenSize(0) / 2), (int) ((store.getScreenSize(1) + ts * 4) / 2), paint);
     }
 }
