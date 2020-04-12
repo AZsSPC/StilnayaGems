@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.azspc.stilnayagems.Main.store;
 import static com.azspc.stilnayagems.Storage.*;
@@ -14,7 +16,6 @@ import static com.azspc.stilnayagems.draw.Placeholder.*;
 
 public class Draw extends View {
     ArrayList<Placeholder> placeholders = new ArrayList<>();
-    int background_color;
 
     public void addPlaceholder(Placeholder pl) {
         placeholders.add(pl);
@@ -30,10 +31,9 @@ public class Draw extends View {
 
     int show_screen_type;
 
-    public Draw(Context context, int bg_c) {
+    public Draw(Context context) {
         super(context);
         show_screen_type = 1;
-        background_color = bg_c;
         //score_height = pm.getInt("height_score", 0);
     }
 
@@ -61,14 +61,18 @@ public class Draw extends View {
         Paint p = new Paint();
         p.setTextSize((int) ((store.getScreenSize(0) - store.getScreenBounds() * 2) / 5));
         for (int i = 0; i < placeholders.size(); i++) {
-            Placeholder pl = placeholders.get(i);
-            int plus = pl.getTime() - pl.getI() * 2;
-            p.setColor(Color.argb(255, 200 + plus, 150 + plus, 50 + plus));
-            if (pl.getI() <= 0) placeholders.remove(i);
-            if (pl.getType().equals(ph_from_to))
-                c.drawText(pl.getText(), pl.getPosX(), pl.getPosY(), p);
-            else if (pl.getType().equals(ph_from_to_img))
-                c.drawBitmap(pl.getImg(), pl.getPosX(), pl.getPosY(), p);
+            try {
+                Placeholder pl = placeholders.get(i);
+                if (pl.getI() <= 0) placeholders.remove(i--);
+                int plus = pl.getTime() - pl.getI() * 2;
+                p.setColor(Color.argb(255, 200 + plus, 150 + plus, 50 + plus));
+                if (pl.getType().equals(ph_from_to))
+                    c.drawText(pl.getText(), pl.getPosX(), pl.getPosY(), p);
+                else if (pl.getType().equals(ph_from_to_img))
+                    c.drawBitmap(pl.getImg(), pl.getPosX(), pl.getPosY(), p);
+            } catch (Exception er) {
+                Log.e("------", er + "");
+            }
         }
     }
 

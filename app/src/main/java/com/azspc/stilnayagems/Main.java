@@ -3,12 +3,15 @@ package com.azspc.stilnayagems;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.azspc.stilnayagems.draw.Placeholder;
 
@@ -25,9 +28,9 @@ public class Main extends AppCompatActivity {
         Point p = new Point();
         getWindowManager().getDefaultDisplay().getSize(p);
         store = new Storage(this, p.x, p.y);
+        store.setFont(ResourcesCompat.getFont(this, R.font.dom));
         store.initDraw(this);
         setContentView(store.getDraw());
-
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -38,12 +41,12 @@ public class Main extends AppCompatActivity {
                 store.setMovePos(new int[]{(int) event.getX(), (int) event.getY()});
                 store.setDownPos(new int[]{(int) event.getX(), (int) event.getY()});
                 store.setUpPos(new int[]{0, 0});
-                store.setIs_touch(true);
+                store.setIsTouch(true);
                 return true;
             }
             case MotionEvent.ACTION_UP: {
                 if (store.getDraw().getShowScreenType() == st_over) {
-                    store.preInitDraw(this);
+                    store.initPlay(getResources());
                     store.getDraw().setShowScreenType(st_play);
                     store.getDraw().addPlaceholder(new Placeholder("Enjoy again", store.getScreenSize(0) / 3, store.getScreenSize(1) / 2, store.getScreenSize(0) / 3, 0, 50));
                 }
@@ -55,7 +58,7 @@ public class Main extends AppCompatActivity {
                 }
                 store.setDownPos(new int[]{0, 0});
                 store.setUpPos(new int[]{(int) event.getX(), (int) event.getY()});
-                store.setIs_touch(false);
+                store.setIsTouch(false);
                 return true;
             }
             case MotionEvent.ACTION_MOVE: {

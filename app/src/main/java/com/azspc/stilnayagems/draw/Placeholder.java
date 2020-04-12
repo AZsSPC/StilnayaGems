@@ -3,14 +3,15 @@ package com.azspc.stilnayagems.draw;
 import android.graphics.Bitmap;
 
 public class Placeholder extends Thread {
-    public static final String
+    static final String
             ph_from_to = "from_to",
             ph_from_to_img = "from_to_img";
-    private int time, posX, posY, posX_end, posY_end, i, move[];
+    private int time, posX, posY, posX_end, posY_end, i;
+    private int[] move;
     private String text, type;
     private Bitmap img;
 
-    public Placeholder(Bitmap image, int pX, int pY, int pXf, int pYf, int time) {
+    Placeholder(Bitmap image, int pX, int pY, int pXf, int pYf, int time) {
         this.type = ph_from_to_img;
         this.img = image;
         this.posX = pX;
@@ -42,7 +43,7 @@ public class Placeholder extends Thread {
                 for (i = time; i >= 0; i--) {
                     this.posX += move[0];
                     this.posY += move[1];
-                    sl(24);
+                    stay();
                 }
                 this.posX = posX_end;
                 this.posY = posY_end;
@@ -52,37 +53,37 @@ public class Placeholder extends Thread {
         i = -1;
     }
 
-    public int getI() {
+    int getI() {
         return i;
     }
 
-    public String getType() {
+    String getType() {
         return type;
     }
 
-    public Bitmap getImg() {
+    Bitmap getImg() {
         return img;
     }
 
-    public int getPosX() {
+    int getPosX() {
         return posX;
     }
 
-    public int getPosY() {
+    int getPosY() {
         return posY;
     }
 
-    public int getTime() {
+    int getTime() {
         return time;
     }
 
-    public String getText() {
+    String getText() {
         return text;
     }
 
-    void sl(int t) {
+    private void stay() {
         try {
-            sleep(t);
+            sleep(24);
         } catch (Exception e) {
             e.printStackTrace();
         }

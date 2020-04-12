@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Stilnaya Gems</string>
+    <string-array name="asd">
+        <item>text_string</item>
+        <item>text_string</item>
+    </string-array>
 </resources>

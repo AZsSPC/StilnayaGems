@@ -8,7 +8,8 @@ import static com.azspc.stilnayagems.Main.store;
 import static com.azspc.stilnayagems.Storage.*;
 
 public class Gem {
-    private int move_role, image_id, pos[];
+    private int[] pos;
+    private int move_role, image_id;
     private boolean selected;
 
     public Gem(int img_id, int x, int y, int move_role) {
@@ -40,8 +41,8 @@ public class Gem {
         } else {
             if (selected) {
                 putGem(p);
-                p.checkCombos();
                 p.checkTasks();
+                p.checkCombos();
             }
             c.drawBitmap(store.getImage(image_id),
                     store.getScreenBounds() + p.getPullSize() * pos[0],
@@ -51,10 +52,10 @@ public class Gem {
 
     private void putGem(Play p) {
         if (!store.isTouch()) {
-            int[] putPos = new int[]{
-                    (store.getPosU()[0] - store.getScreenBounds()) / p.getPullSize(),
-                    (store.getPosU()[1] - p.getSpaceForDesk()) / p.getPullSize()};
             try {
+                int[] putPos = new int[]{
+                        (store.getPosU()[0] - store.getScreenBounds()) / p.getPullSize(),
+                        (store.getPosU()[1] - p.getSpaceForDesk()) / p.getPullSize()};
                 if (p.getGemsGhosts()[putPos[0]][putPos[1]]) {
                     p.setGem(putPos[0], putPos[1], image_id, move_role);
                     p.generateRandomGems(p.getGemSpawnCount());

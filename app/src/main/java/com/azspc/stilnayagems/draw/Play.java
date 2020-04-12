@@ -6,10 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 
 import com.azspc.stilnayagems.Gem;
 import com.azspc.stilnayagems.R;
@@ -20,7 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import static com.azspc.stilnayagems.Main.store;
-import static com.azspc.stilnayagems.Levels.*;
+import static com.azspc.stilnayagems.Level.*;
 import static com.azspc.stilnayagems.Storage.*;
 
 public class Play extends DrawAsset {
@@ -191,8 +187,6 @@ public class Play extends DrawAsset {
         needs = level_settings;
         for (String s : level_settings.split(",")) gemDestroyed.put(s.split(":")[0], 0);
         paint = p;
-
-
     }
 
     public void draw(Canvas c) {
@@ -223,14 +217,26 @@ public class Play extends DrawAsset {
     private void drawHints(Canvas c) {
         int ts = store.getTextSize();
         int sb = store.getScreenBounds();
-        paint.setTextSize(ts);
-        paint.setTextAlign(Paint.Align.LEFT);
-        c.drawText("Score: " + score, sb, sb + ts, paint);
-        c.drawText("Height score: " + score_height, sb, sb + ts * 2, paint);
-        c.drawText("Checked: " + checked, sb, sb + ts * 3, paint);
-        c.drawText("Gem spawn count: " + gem_spawn_count, sb, sb + ts * 4, paint);
         paint.setTextAlign(Paint.Align.CENTER);
-        c.drawText("You need: " + needs, (int) (store.getScreenSize(0) / 2), space_for_desk - ts, paint);
+        int[] needs_rect = {sb, sb * 2 + ts, store.getScreenSize(0) - sb, space_for_desk - sb};
+        paint.setTextSize(ts);
+        paint.setColor(Color.argb(255, 255, 220, 200));
+        c.drawRect(needs_rect[0], needs_rect[1], needs_rect[2], needs_rect[3], paint);
+        paint.setColor(Color.BLACK);
+        c.drawText(" Score: " + score, store.getScreenSize(0) >> 1, sb + ts, paint);
+        Bitmap img;
+        int i = 0;
+        int n[] = new int[2];
+        paint.setTextAlign(Paint.Align.LEFT);
+        for (String id : needs.split(",")) {
+            n[0] = gemDestroyed.get(id.split(":")[0]);
+            n[1] = Integer.parseInt(id.split(":")[1]);
+
+            img = store.getImage(getGFC(id.split(":")[0]));
+            c.drawBitmap(img, (int) (store.getScreenSize(0) / 2) - img.getWidth(), needs_rect[1] + img.getHeight() * i, paint);
+            c.drawText((n[0] >= n[1]) ? "completed" : n[0] + " of " + n[1], (int) (store.getScreenSize(0) / 2), needs_rect[1] + ts + sb + img.getHeight() * i++, paint);
+
+        }
     }
 
     private boolean checkOverPlaced() {
@@ -254,51 +260,53 @@ public class Play extends DrawAsset {
     }
 
     public void checkCombos() {
-        if (checkOverPlaced()) {
-            HashSet<int[]> to_del = new HashSet<>();
-            for (int x = 0; x < gems.length; x++)
-                for (int y = 0; y < gems.length; y++)
-                    if (!(gems[x][y].getImageID() == gem_null || gems[x][y].getImageID() == gem_ghost)) {
-                        int img_id = gems[x][y].getImageID();
-                        try {
-                            if (img_id == gems[x + 1][y].getImageID() && img_id == gems[x + 2][y].getImageID())
-                                for (int i = 0; i < 3; i++) to_del.add(new int[]{x + i, y});
-                        } catch (Exception ignored) {
-                        }
-                        try {
-                            if (img_id == gems[x][y + 1].getImageID() && img_id == gems[x][y + 2].getImageID())
-                                for (int i = 0; i < 3; i++) to_del.add(new int[]{x, y + i});
-                        } catch (Exception ignored) {
-                        }
-                    }
-            if (to_del.size() > 0) {
-                SoundManager sm = store.getSoundManager();
-                for (int[] i : to_del) {
+        HashSet<int[]> to_del = new HashSet<>();
+        for (int x = 0; x < gems.length; x++)
+            for (int y = 0; y < gems.length; y++)
+                if (!(gems[x][y].getImageID() == gem_null || gems[x][y].getImageID() == gem_ghost)) {
+                    int img_id = gems[x][y].getImageID();
                     try {
-                        store.getDraw().addPlaceholder(new Placeholder(store.getImage(gems[i[0]][i[1]].getImageID()),
-                                store.getScreenBounds() + pull_size * i[0], space_for_desk + pull_size * i[1], 0, 0, 32));
-                        String id = getCFG(gems[i[0]][i[1]].getImageID());
-                        gemDestroyed.put(id, 1 + gemDestroyed.get(id));
+                        if (img_id == gems[x + 1][y].getImageID() && img_id == gems[x + 2][y].getImageID())
+                            for (int i = 0; i < 3; i++) to_del.add(new int[]{x + i, y});
                     } catch (Exception ignored) {
                     }
-                    gems[i[0]][i[1]].setImageID(gem_null);
+                    try {
+                        if (img_id == gems[x][y + 1].getImageID() && img_id == gems[x][y + 2].getImageID())
+                            for (int i = 0; i < 3; i++) to_del.add(new int[]{x, y + i});
+                    } catch (Exception ignored) {
+                    }
                 }
-                int td = (int) (to_del.size() * (Math.random() * 3 + 7));
-                String text = "+" + td;
-                store.getDraw().addPlaceholder(new Placeholder(text,
-                        store.getScreenSize(0) - store.getScreenBounds() - (store.getScreenSize(0) - store.getScreenBounds() * 2) / 5 * text.length(),
-                        store.getScreenSize(1) / 2 - pull_size, 0, 0, 32));
-                score += td;
-                if (sm.isEnable()) sm.play(sm.getSoundScoreUp(), 1, 1, 0, 0, 1.2f);
-// if (score > score_height) {
-//                    if (sm.isEnable()) sm.play(sm.getS_score_up(), 1, 1, 0, 1, 2f);
-//                    store.getDraw().addPlaceholder(new Placeholder("New height score!", screen_size[0] / 2, screen_size[1] / 2, screen_size[0] / 4, screen_size[1] / 4, 32, this));
-//                    score_height = score;
-//                    writeFile(this);
-//                }
+        if (to_del.size() > 0) {
+            SoundManager sm = store.getSoundManager();
+            for (int[] i : to_del) {
+                try {
+                    store.getDraw().addPlaceholder(new Placeholder(
+                            store.getImage(gems[i[0]][i[1]].getImageID()),
+                            store.getScreenBounds() + pull_size * i[0],
+                            space_for_desk + pull_size * i[1],
+                            0, 0, 32));
+                    String id = getCFG(gems[i[0]][i[1]].getImageID());
+                    gemDestroyed.put(id, 1 + gemDestroyed.get(id));
+                } catch (Exception ignored) {
+                }
+                gems[i[0]][i[1]].setImageID(gem_null);
             }
-            checked = true;
+            score += (int) (to_del.size() * (Math.random() * 3 + 7));
+           /*  int td = (int) (to_del.size() * (Math.random() * 3 + 7));
+            String text = "+" + td;
+            store.getDraw().addPlaceholder(new Placeholder(text,
+                    store.getScreenSize(0) - store.getScreenBounds() - (store.getScreenSize(0) - store.getScreenBounds() * 2) / 5 * text.length(),
+                    store.getScreenSize(1) / 2 - pull_size, 0, 0, 32));*/
+            if (sm.isEnable()) sm.play(sm.getSoundScoreUp(), 1, 1, 0, 0, 1.2f);
+           /*if (score > score_height) {
+                  if (sm.isEnable()) sm.play(sm.getS_score_up(), 1, 1, 0, 1, 2f);
+                   store.getDraw().addPlaceholder(new Placeholder("New height score!", screen_size[0] / 2, screen_size[1] / 2, screen_size[0] / 4, screen_size[1] / 4, 32, this));
+                   score_height = score;
+                  writeFile(this);
+               }*/
         }
+        checked = true;
+        checkOverPlaced();
     }
 
 }

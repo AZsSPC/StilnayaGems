@@ -2,10 +2,11 @@ package com.azspc.stilnayagems;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
+import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
 import com.azspc.stilnayagems.draw.Draw;
@@ -45,8 +46,10 @@ public class Storage {
     private Draw draw;
     private Play play;
     private Over over;
+    private Paint paint;
 
     Storage(Context c, int w, int h) {
+        paint = new Paint();
         mPos = dPos = uPos = new int[]{0, 0};
         pm = PreferenceManager.getDefaultSharedPreferences(c);
         game_over = false;
@@ -59,17 +62,18 @@ public class Storage {
         sound_manager = new SoundManager(c);
     }
 
-    public void initDraw(Context c) {
-        preInitDraw(c);
-        draw = new Draw(c, Color.CYAN);
+    void setFont(Typeface f) {
+        paint.setTypeface(f);
     }
 
-    public void preInitDraw(Context c) {
-        Paint p = new Paint();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            p.setTypeface(c.getResources().getFont(R.font.dom));
-        play = new Play((int) (Math.random() * 6), 5, c.getResources(), c.getResources().getColor(R.color.play_bg), p);
-        over = new Over(c.getResources().getColor(R.color.win_bg), c.getResources().getColor(R.color.lose_bg), p);
+    void initDraw(Context c) {
+        initPlay(c.getResources());
+        over = new Over(c.getResources().getColor(R.color.win_bg), c.getResources().getColor(R.color.lose_bg), paint);
+        draw = new Draw(c);
+    }
+
+    void initPlay(Resources r) {
+        play = new Play((int) (Math.random() * 6), 5, r, r.getColor(R.color.play_bg), paint);
     }
 
     public void putImage(int id, Bitmap img) {
@@ -104,7 +108,7 @@ public class Storage {
         this.uPos = uPos;
     }
 
-    public void setIs_touch(boolean is_touch) {
+    public void setIsTouch(boolean is_touch) {
         this.touch = is_touch;
     }
 
@@ -173,7 +177,7 @@ public class Storage {
         SharedPreferences.Editor save = pm.edit();
         // if (score > pm.getInt("height_score", 0)) save.putInt("height_score", s.score);
         save.putBoolean("sound_on", store.sound_on);
-        save.commit();
+        save.apply();
     }
 
 }

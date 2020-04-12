@@ -2,7 +2,7 @@ package com.azspc.stilnayagems;
 
 import static com.azspc.stilnayagems.Storage.*;
 
-public class Levels {
+public class Level {
     public static final String all = "" +
             "lv0=r:2,b:7;" +
             "lv1=r:5,g:3,b:7;" +
@@ -32,6 +32,29 @@ public class Levels {
                 return "v";
             case gem_yellow:
                 return "y";
+        }
+    }
+
+    public static int getGFC(String str) {
+        switch (str) {
+            default:
+                return gem_null;
+            case "a":
+                return gem_aqua;
+            case "b":
+                return gem_blue;
+            case "g":
+                return gem_green;
+            case "o":
+                return gem_orange;
+            case "p":
+                return gem_pink;
+            case "r":
+                return gem_red;
+            case "v":
+                return gem_violet;
+            case "y":
+                return gem_yellow;
         }
     }
 }
