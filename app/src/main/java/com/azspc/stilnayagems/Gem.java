@@ -41,8 +41,8 @@ public class Gem {
         } else {
             if (selected) {
                 putGem(p);
-                p.checkTasks();
                 p.checkCombos();
+                p.checkTasks();
             }
             c.drawBitmap(store.getImage(image_id),
                     store.getScreenBounds() + p.getPullSize() * pos[0],

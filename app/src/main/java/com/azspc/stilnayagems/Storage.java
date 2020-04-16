@@ -4,17 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.preference.PreferenceManager;
 
 import com.azspc.stilnayagems.draw.Draw;
+import com.azspc.stilnayagems.draw.Meet;
 import com.azspc.stilnayagems.draw.Over;
 import com.azspc.stilnayagems.draw.Play;
 
 import java.util.HashMap;
 
+import static com.azspc.stilnayagems.Level.all;
 import static com.azspc.stilnayagems.Main.pm;
 import static com.azspc.stilnayagems.Main.store;
 
@@ -40,19 +41,19 @@ public class Storage {
     private int screen_bounds, text_size;
     private double play_up_sound;
     private int[] screen_size, mPos, dPos, uPos;
-    private boolean touch, game_over, sound_on;
+    private boolean touch, sound_on;
     private HashMap<Integer, Bitmap> images = new HashMap<>();
     private SoundManager sound_manager;
     private Draw draw;
     private Play play;
     private Over over;
+    private Meet meet;
     private Paint paint;
+
 
     Storage(Context c, int w, int h) {
         paint = new Paint();
         mPos = dPos = uPos = new int[]{0, 0};
-        pm = PreferenceManager.getDefaultSharedPreferences(c);
-        game_over = false;
         touch = false;
         sound_on = pm.getBoolean("sound_on", true);
         play_up_sound = 0;
@@ -66,15 +67,21 @@ public class Storage {
         paint.setTypeface(f);
     }
 
+    void initPlay(Resources r) {
+        play = new Play((int) (Math.random() * (all.split(";").length - 0.01)), 5, r, r.getColor(R.color.play_bg), paint);
+    }
+
     void initDraw(Context c) {
         initPlay(c.getResources());
+        meet = new Meet(c.getResources().getColor(R.color.meet_bg), paint, BitmapFactory.decodeResource(c.getResources(), R.drawable.logo));
         over = new Over(c.getResources().getColor(R.color.win_bg), c.getResources().getColor(R.color.lose_bg), paint);
         draw = new Draw(c);
     }
 
-    void initPlay(Resources r) {
-        play = new Play((int) (Math.random() * 6), 5, r, r.getColor(R.color.play_bg), paint);
+    public Meet getMeet() {
+        return meet;
     }
+
 
     public void putImage(int id, Bitmap img) {
         images.put(id, img);
@@ -112,10 +119,6 @@ public class Storage {
         this.touch = is_touch;
     }
 
-    public void setIsGameOver(boolean is_game_over) {
-        this.game_over = is_game_over;
-    }
-
     public void setIsSoundOn(boolean is_sound_on) {
         this.sound_on = is_sound_on;
     }
@@ -145,9 +148,6 @@ public class Storage {
         return touch;
     }
 
-    public boolean isGameOver() {
-        return game_over;
-    }
 
     public boolean isSoundOn() {
         return sound_on;

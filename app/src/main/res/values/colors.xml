@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="play_bg">#FCC6A8</color>
+    <color name="meet_bg">#FCC6A8</color>
     <color name="lose_bg">#F59090</color>
     <color name="win_bg">#95FF95</color>
 </resources>

@@ -33,7 +33,7 @@ public class Draw extends View {
 
     public Draw(Context context) {
         super(context);
-        show_screen_type = 1;
+        show_screen_type = st_meet;
         //score_height = pm.getInt("height_score", 0);
     }
 
@@ -47,6 +47,9 @@ public class Draw extends View {
                     break;
                 case st_over:
                     store.getOver().draw(c);
+                    break;
+                case st_meet:
+                    store.getMeet().draw(c);
                     break;
             }
             drawPlaceholders(c);

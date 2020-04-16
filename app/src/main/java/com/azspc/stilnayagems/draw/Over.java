@@ -3,6 +3,7 @@ package com.azspc.stilnayagems.draw;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import static com.azspc.stilnayagems.Main.lang;
 import static com.azspc.stilnayagems.Main.store;
 
 public class Over extends DrawAsset {
@@ -13,7 +14,7 @@ public class Over extends DrawAsset {
             {"Try again...", "Lose", "Bad score", "You can replay it!"}};
     private Paint paint;
 
-     void setFinType(boolean type) {
+    void setFinType(boolean type) {
         setBackGround(colors[type ? 0 : 1]);
         out = msg[type ? 0 : 1][(int) (Math.random() * msg.length - 0.1)];
     }
@@ -31,8 +32,8 @@ public class Over extends DrawAsset {
         int ts = store.getTextSize() * 2;
         paint.setTextSize(ts);
         paint.setTextAlign(Paint.Align.CENTER);
-        c.drawText("Game over", store.getScreenSize(0) >> 1, (store.getScreenSize(1) - ts) >> 1, paint);
-        c.drawText("Score: " + store.getPlay().getScore(), store.getScreenSize(0) >> 1, (store.getScreenSize(1) + ts) >> 1, paint);
+        c.drawText(lang.translate("game_over"), store.getScreenSize(0) >> 1, (store.getScreenSize(1) - ts) >> 1, paint);
+        c.drawText(lang.translate("score") + ": " + store.getPlay().getScore(), store.getScreenSize(0) >> 1, (store.getScreenSize(1) + ts) >> 1, paint);
         paint.setTextSize(ts >> 1);
         c.drawText(out, store.getScreenSize(0) >> 1, (store.getScreenSize(1) + ts * 4) >> 1, paint);
     }

@@ -1,11 +1,13 @@
 package com.azspc.stilnayagems.draw;
 
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.azspc.stilnayagems.Gem;
 import com.azspc.stilnayagems.R;
@@ -15,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import static com.azspc.stilnayagems.Level.getGFC;
+import static com.azspc.stilnayagems.Main.lang;
+import static com.azspc.stilnayagems.Main.pm;
 import static com.azspc.stilnayagems.Main.store;
 import static com.azspc.stilnayagems.Level.*;
 import static com.azspc.stilnayagems.Storage.*;
@@ -33,8 +38,8 @@ public class Play extends DrawAsset {
         return score;
     }
 
-    public int getScoreHeight() {
-        return score_height;
+    public int getScoreBest() {
+        return score_best;
     }
 
     public int getGemSpawnCount() {
@@ -57,24 +62,9 @@ public class Play extends DrawAsset {
         gems[x][y] = new Gem(id, x, y, mr);
     }
 
-    public int getScore_height() {
-        return score_height;
-    }
-
-    public int getPull_size() {
-        return pull_size;
-    }
-
-    public int getSpace_for_desk() {
-        return space_for_desk;
-    }
 
     public void setScore(int score) {
         this.score = score;
-    }
-
-    public void setScore_height(int score_height) {
-        this.score_height = score_height;
     }
 
     public void setGem_spawn_count(int gem_spawn_count) {
@@ -142,51 +132,51 @@ public class Play extends DrawAsset {
     }
 
     private int getRandomGem() {
-        switch ((int) (Math.random() * 8 * gems.length)) {
-            default:
-                return gem_null;
-            case 0:
-                return gem_green;
-            case 1:
-                return gem_blue;
-            case 2:
-                return gem_violet;
-            case 3:
-                return gem_red;
-            case 4:
-                return gem_aqua;
-            case 5:
-                return gem_orange;
-            case 6:
-                return gem_yellow;
-            case 7:
-                return gem_pink;
+        try {
+            return active_gems[(int) (Math.random() * active_gems.length + 1)];
+        } catch (Exception ignored) {
         }
+        return gem_null;
     }
 
     // </editor-fold>
     HashMap<String, Integer> gemDestroyed = new HashMap<>();
-    String needs, level_settings;
-    private int pull_size, space_for_desk, score, score_height, gem_spawn_count, level_id;
+    private String gem_needs, level_id;
+    private int pull_size, space_for_desk, score, score_best, gem_spawn_count;
     private boolean[][] ghosts;
     private boolean checked;
     private Bitmap pulls;
     private Gem[][] gems;
     private Paint paint;
+    private int[] active_gems;
 
-    public Play(int lvl_num, int pulls, Resources r, int cbg, Paint p) {
+    public Play(Object lvl_id, int pulls, Resources r, int cbg, Paint p) {
         super(cbg);
-        level_id = lvl_num;
-        gem_spawn_count = 1;
+        level_id = lvl_id + "";
+        gem_needs = "";
+        score_best = pm.getInt("lv" + level_id + "score", 0);
+        for (String sector : all.split("lv" + level_id + "=")[1].substring(0, all.split("lv" + level_id + "=")[1].indexOf(";")).split(",")) {
+            String[] s = sector.split(":");
+            if (getGFC(s[0] + "") != gem_null) {
+                gem_needs += "," + sector;
+                gemDestroyed.put(s[0], 0);
+            } else if (s[0].equals("active")) {
+                active_gems = new int[s.length];
+                for (int i = 0; active_gems.length > i; i++) active_gems[i] = getGFC(s[i]);
+            } else if (s[0].equals("spawn")) {
+                gem_spawn_count = Integer.parseInt(s[1]);
+            } else if (s[0].equals("ag")) {
+                active_gems = new int[s.length];
+                for (int i = 0; active_gems.length > i; i++) active_gems[i] = getGFC(s[i]);
+            }
+        }
+        gem_needs = gem_needs.substring(1);
+        paint = p;
         firstGeneration(pulls);
         pull_size = (store.getScreenSize(0) - store.getScreenBounds() * 2) / gems.length;
         space_for_desk = store.getScreenSize(1) - (store.getScreenBounds() + pull_size * gems.length);
         initGemBitmaps(r);
         initPull();
-        level_settings = all.split("lv" + level_id + "=")[1].substring(0, all.split("lv" + level_id + "=")[1].indexOf(";"));
-        needs = level_settings;
-        for (String s : level_settings.split(",")) gemDestroyed.put(s.split(":")[0], 0);
-        paint = p;
     }
 
     public void draw(Canvas c) {
@@ -218,42 +208,43 @@ public class Play extends DrawAsset {
         int ts = store.getTextSize();
         int sb = store.getScreenBounds();
         paint.setTextAlign(Paint.Align.CENTER);
-        int[] needs_rect = {sb, sb * 2 + ts, store.getScreenSize(0) - sb, space_for_desk - sb};
+        int[] needs_rect = {sb, sb * 2 + ts * 2, store.getScreenSize(0) - sb, space_for_desk - sb};
         paint.setTextSize(ts);
         paint.setColor(Color.argb(255, 255, 220, 200));
         c.drawRect(needs_rect[0], needs_rect[1], needs_rect[2], needs_rect[3], paint);
         paint.setColor(Color.BLACK);
-        c.drawText(" Score: " + score, store.getScreenSize(0) >> 1, sb + ts, paint);
+        c.drawText(lang.translate("level") + ": " + level_id + " | " + lang.translate("score") + ": " + score, store.getScreenSize(0) >> 1, sb + ts, paint);
+        c.drawText(lang.translate("score_best") + ": " + score_best, store.getScreenSize(0) >> 1, sb + ts * 2, paint);
         Bitmap img;
         int i = 0;
-        int n[] = new int[2];
         paint.setTextAlign(Paint.Align.LEFT);
-        for (String id : needs.split(",")) {
-            n[0] = gemDestroyed.get(id.split(":")[0]);
-            n[1] = Integer.parseInt(id.split(":")[1]);
-
+        for (String id : gem_needs.split(",")) {
+            int n[] = {gemDestroyed.get(id.split(":")[0]), Integer.parseInt(id.split(":")[1])};
             img = store.getImage(getGFC(id.split(":")[0]));
             c.drawBitmap(img, (int) (store.getScreenSize(0) / 2) - img.getWidth(), needs_rect[1] + img.getHeight() * i, paint);
-            c.drawText((n[0] >= n[1]) ? "completed" : n[0] + " of " + n[1], (int) (store.getScreenSize(0) / 2), needs_rect[1] + ts + sb + img.getHeight() * i++, paint);
+            c.drawText((n[0] >= n[1]) ? lang.translate("completed") : n[0] + " " + lang.translate("of") + " " + n[1],
+                    (int) (store.getScreenSize(0) / 2), (float) (needs_rect[1] * 1.5 + img.getHeight() * i++), paint);
 
         }
     }
 
     private boolean checkOverPlaced() {
         for (Gem[] gb : gems) for (Gem g : gb) if (g.getImageID() == gem_null) return true;
-        store.getDraw().setShowScreenType(2);
+        if (score_best < score) pm.edit().putInt("lv" + level_id + "score", score).apply();
+        store.getDraw().setShowScreenType(st_over);
         store.getOver().setFinType(false);
         return false;
     }
 
     public void checkTasks() {
         boolean tasksCompleted = true;
-        for (String task : level_settings.split(","))
+        for (String task : gem_needs.split(","))
             tasksCompleted &= Integer.parseInt(task.split(":")[1])
                     <= gemDestroyed.get(task.split(":")[0]);
         //Log.e("lvl-" + level_id + " task", task + " | " + gemDestroyed.get(task.split(":")[0]));
 
         if (tasksCompleted) {
+            if (score_best < score) pm.edit().putInt("lv" + level_id + "score", score).apply();
             store.getDraw().setShowScreenType(2);
             store.getOver().setFinType(true);
         }

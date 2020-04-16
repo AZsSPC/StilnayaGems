@@ -4,34 +4,34 @@ import static com.azspc.stilnayagems.Storage.*;
 
 public class Level {
     public static final String all = "" +
-            "lv0=r:2,b:7;" +
-            "lv1=r:5,g:3,b:7;" +
-            "lv2=b:15,a:10;" +
-            "lv3=y:9,o:9,r:9;" +
-            "lv4=b:2,a:4;" +
-            "lv5=v:16,b:4,a:7;" +
-            "lv6=p:1;";//second this level IMPOSSIBLE!
+            "lv0=gg:16,gr:8,gb:4,active:gg:gr:gb:gb,spawn:1;" +
+            "lv1=gv:32,active:gg:gy:gv:gy:gv,spawn:1;" +
+            "lv2=ga:16,gb:16,gv:16,active:ga:gb:gv,spawn:1;" +
+            "lv3=gr:40,gy:40,active:gr:gy,spawn:2;" +
+            "lv4=gb:218,active:gb:ga:ga,spawn:3;" +
+            "lv5=go:20,ga:32,active:go:gp:ga:gg:gg,spawn:1;" +
+            "lv6=gg:20,gb:15,active:gg:gp:gy:gv:gb,spawn:1;";
 
     public static String getCFG(int id) {
         switch (id) {
             default:
-                return " ";
+                return "gn";
             case gem_aqua:
-                return "a";
+                return "ga";
             case gem_blue:
-                return "b";
+                return "gb";
             case gem_green:
-                return "g";
+                return "gg";
             case gem_orange:
-                return "o";
+                return "go";
             case gem_pink:
-                return "p";
+                return "gp";
             case gem_red:
-                return "r";
+                return "gr";
             case gem_violet:
-                return "v";
+                return "gv";
             case gem_yellow:
-                return "y";
+                return "gy";
         }
     }
 
@@ -39,21 +39,21 @@ public class Level {
         switch (str) {
             default:
                 return gem_null;
-            case "a":
+            case "ga":
                 return gem_aqua;
-            case "b":
+            case "gb":
                 return gem_blue;
-            case "g":
+            case "gg":
                 return gem_green;
-            case "o":
+            case "go":
                 return gem_orange;
-            case "p":
+            case "gp":
                 return gem_pink;
-            case "r":
+            case "gr":
                 return gem_red;
-            case "v":
+            case "gv":
                 return gem_violet;
-            case "y":
+            case "gy":
                 return gem_yellow;
         }
     }

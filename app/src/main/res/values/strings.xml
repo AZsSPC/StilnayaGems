@@ -1,7 +1,19 @@
 <resources>
     <string name="app_name">Stilnaya Gems</string>
-    <string-array name="asd">
-        <item>text_string</item>
-        <item>text_string</item>
-    </string-array>
+    <string name="lang_en">
+        score=Score;
+        score_best=Best score;
+        game_over=Level over;
+        of=of;
+        completed=completed;
+        level=Level
+    </string>
+    <string name="lang_ru">
+        score=Счет;
+        score_best=Лучший счет;
+        game_over=Уровень завершен;
+        of=из;
+        completed=выполнено;
+        level=Уровень
+    </string>
 </resources>

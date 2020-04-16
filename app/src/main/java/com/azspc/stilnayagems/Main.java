@@ -3,27 +3,33 @@ package com.azspc.stilnayagems;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.azspc.stilnayagems.draw.Placeholder;
+import java.util.Locale;
 
-import static com.azspc.stilnayagems.Storage.st_over;
-import static com.azspc.stilnayagems.Storage.st_play;
+import static com.azspc.stilnayagems.Storage.*;
 
 public class Main extends AppCompatActivity {
     public static Storage store;
     public static SharedPreferences pm;
+    public static Lang lang;
+    TouchAct tact = new TouchAct();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pm = PreferenceManager.getDefaultSharedPreferences(this);
+        if (pm.getString("lang", Locale.getDefault().getLanguage()).equals("ru")
+                || pm.getString("lang", Locale.getDefault().getLanguage()).equals("ua"))
+            lang = new Lang(getResources().getString(R.string.lang_ru));
+        else
+            lang = new Lang(getResources().getString(R.string.lang_en));
         onResume();
         Point p = new Point();
         getWindowManager().getDefaultDisplay().getSize(p);
@@ -33,42 +39,15 @@ public class Main extends AppCompatActivity {
         setContentView(store.getDraw());
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                store.setPlayUpSound(0.5);
-                store.setMovePos(new int[]{(int) event.getX(), (int) event.getY()});
-                store.setDownPos(new int[]{(int) event.getX(), (int) event.getY()});
-                store.setUpPos(new int[]{0, 0});
-                store.setIsTouch(true);
-                return true;
-            }
-            case MotionEvent.ACTION_UP: {
-                if (store.getDraw().getShowScreenType() == st_over) {
-                    store.initPlay(getResources());
-                    store.getDraw().setShowScreenType(st_play);
-                    store.getDraw().addPlaceholder(new Placeholder("Enjoy again", store.getScreenSize(0) / 3, store.getScreenSize(1) / 2, store.getScreenSize(0) / 3, 0, 50));
-                }
-                store.getPlay().setChecked(false);
-                if (store.isGameOver()) store.writeFile();
-                if (store.getPlayUpSound() == 1 && store.isSoundOn()) {
-                    store.getSoundManager().play(store.getSoundManager().getSoundGemDown(), 0.5f, 0.5f, 0, 0, 2.8f);
-                    store.setPlayUpSound(0);
-                }
-                store.setDownPos(new int[]{0, 0});
-                store.setUpPos(new int[]{(int) event.getX(), (int) event.getY()});
-                store.setIsTouch(false);
-                return true;
-            }
-            case MotionEvent.ACTION_MOVE: {
-                store.setMovePos(new int[]{(int) event.getX(), (int) event.getY()});
-                return true;
-            }
-            case MotionEvent.ACTION_POINTER_DOWN:
-            case MotionEvent.ACTION_CANCEL:
+    public boolean onTouchEvent(MotionEvent e) {
+        tact.onMainTouch(e);
+        switch (store.getDraw().getShowScreenType()) {
             default:
                 return false;
+            case st_play:
+                return tact.onPlayTouch(e);
+            case st_over:
+                return tact.onOverTouch(e, getResources());
         }
     }
 
